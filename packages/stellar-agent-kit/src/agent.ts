@@ -9,7 +9,7 @@ import { createDexClient, type DexAsset, type QuoteResult, type SwapResult } fro
 import { createReflectorOracle, type OracleAsset, type PriceData } from "./oracle/index.js";
 import { lendingSupply as blendSupply, lendingBorrow as blendBorrow, type LendingSupplyArgs, type LendingBorrowArgs, type LendingResult } from "./lending/index.js";
 
-export type StellarNetwork = NetworkName;
+export type StellarNetwork = "mainnet" | "testnet";
 
 function getNetworkPassphrase(network: StellarNetwork): string {
   return network === "testnet" ? Networks.TESTNET : Networks.PUBLIC;

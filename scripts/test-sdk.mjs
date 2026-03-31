@@ -2,12 +2,13 @@
 /**
  * Quick test: stellar-agent-kit loads and can initialize (and optionally get a quote).
  * From repo root: npm run build && node scripts/test-sdk.mjs
- * Requires SECRET_KEY. Set NETWORK=testnet to test the testnet configuration.
+ * Requires SECRET_KEY (valid Stellar secret). Set STELLAR_NETWORK=testnet to run on testnet.
  * Set SOROSWAP_API_KEY for quote test.
  */
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { existsSync } from "node:fs";
+import "dotenv/config";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const distPath = join(__dirname, "..", "packages", "stellar-agent-kit", "dist", "index.js");
@@ -31,15 +32,15 @@ try {
 }
 
 const secret = process.env.SECRET_KEY;
-const network = process.env.NETWORK === "testnet" ? "testnet" : "mainnet";
+const network = (process.env.STELLAR_NETWORK ?? process.env.NETWORK) === "testnet" ? "testnet" : "mainnet";
 const assets = network === "testnet" ? TESTNET_ASSETS : MAINNET_ASSETS;
 if (!secret) {
-  console.error(`SECRET_KEY is required. Set it in .env or run: SECRET_KEY=your_${network}_secret NETWORK=${network} node scripts/test-sdk.mjs`);
+  console.error(`SECRET_KEY is required. Set it in .env or run: SECRET_KEY=your_${network}_secret STELLAR_NETWORK=${network} node scripts/test-sdk.mjs`);
   process.exit(1);
 }
 
 async function main() {
-  console.log("1. Loading stellar-agent-kit... OK");
+  console.log(`1. Loading stellar-agent-kit (${network})... OK`);
   const agent = new StellarAgentKit(secret, network);
   await agent.initialize();
   console.log(`2. StellarAgentKit.initialize() on ${network}... OK`);
